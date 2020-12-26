@@ -30,7 +30,7 @@ public class AgencyReviewController {
     }
 
     @PostMapping("")
-    public ResponseEntity<AgencyReview> createReview(@RequestBody AgencyReviewModel model) {
+    public ResponseEntity<AgencyReview> createReview(@RequestBody AgencyReview model) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
         } catch (ResourceAlreadyExistException e) {
@@ -40,7 +40,7 @@ public class AgencyReviewController {
 
 
     @PutMapping("")
-    public ResponseEntity<AgencyReview> updateReview(@RequestBody AgencyReviewModel model) {
+    public ResponseEntity<AgencyReview> updateReview(@RequestBody AgencyReview model) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
         } catch ( ResourceNotFoundException e) {

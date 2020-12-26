@@ -4,8 +4,6 @@ import com.alamin.toursystem.dao.LocationReviewDao;
 import com.alamin.toursystem.entity.LocationReview;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
-import com.alamin.toursystem.model.*;
-import com.alamin.toursystem.repository.RevRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +31,7 @@ public class LocationReviewController {
     }
 
     @PostMapping("")
-    public ResponseEntity<LocationReview> createReview(@RequestBody LocationReviewModel model) {
+    public ResponseEntity<LocationReview> createReview(@RequestBody LocationReview model) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
         } catch (ResourceAlreadyExistException e) {
@@ -43,7 +41,7 @@ public class LocationReviewController {
 
 
     @PutMapping("")
-    public ResponseEntity<LocationReview> updateReview(@RequestBody LocationReviewModel model) {
+    public ResponseEntity<LocationReview> updateReview(@RequestBody LocationReview model) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
         } catch ( ResourceNotFoundException e) {

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+//TODO: ADD review comment
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

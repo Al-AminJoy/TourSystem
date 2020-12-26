@@ -20,6 +20,10 @@ public class LocationController {
     @Autowired
     private LocationDao dao;
 
+    /**
+     * Disabled Codes for Testing purpose for this table.
+     */
+/*
     @GetMapping("")
     public ResponseEntity<List<Location>> readLocations(){
         return ResponseEntity.ok(dao.getAll());
@@ -33,8 +37,21 @@ public class LocationController {
         }
     }
 
+     */
+    @GetMapping("")
+    public ResponseEntity<List<LocationModel>> readLocations(){
+        return ResponseEntity.ok(dao.getAllLocation());
+    }
+    @GetMapping("/{location_id}")
+    public ResponseEntity<LocationModel> readLocation(@PathVariable long location_id) {
+        try {
+            return ResponseEntity.ok(dao.findByLocationId(location_id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @PostMapping("")
-    public ResponseEntity<Location> createReview(@RequestBody LocationModel model) {
+    public ResponseEntity<Location> createReview(@RequestBody Location model) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
         } catch (ResourceAlreadyExistException e) {

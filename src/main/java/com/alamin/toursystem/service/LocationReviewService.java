@@ -1,6 +1,8 @@
 package com.alamin.toursystem.service;
 
 import com.alamin.toursystem.dao.LocationReviewDao;
+import com.alamin.toursystem.dao.UserDao;
+import com.alamin.toursystem.entity.User;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.entity.LocationReview;
 import com.alamin.toursystem.model.LocationReviewModel;
@@ -16,6 +18,8 @@ import java.util.List;
 public class LocationReviewService implements LocationReviewDao {
     @Autowired
     private LocationReviewRepository reviewRepository;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public List<LocationReview> getAll() {
@@ -31,22 +35,18 @@ public class LocationReviewService implements LocationReviewDao {
     }
 
     @Override
-    public LocationReview create(LocationReviewModel model) throws ResourceAlreadyExistException {
-        LocationReview createReview = new LocationReview(
-                model.getLocation_rating(),
-                model.getLocation_id(),
-                model.getUser_id());
+    public LocationReview create(LocationReview model) throws ResourceAlreadyExistException {
         if (reviewRepository.existsById(model.getLocation_review_id())){
             throw new ResourceAlreadyExistException();
         }
         else {
-            LocationReview savedReview=reviewRepository.save(createReview);
+            LocationReview savedReview=reviewRepository.save(model);
             return savedReview;
         }
     }
 
     @Override
-    public LocationReview update(LocationReviewModel model) throws ResourceNotFoundException {
+    public LocationReview update(LocationReview model) throws ResourceNotFoundException {
         LocationReview locationReview=new LocationReview(
                 model.getLocation_review_id(),
                 model.getLocation_rating(),
@@ -71,5 +71,35 @@ public class LocationReviewService implements LocationReviewDao {
         else{
             throw new ResourceNotFoundException();
         }
+    }
+    @Override
+    public List<LocationReviewModel> findByLocationId(long location_id)  {
+        List<LocationReviewModel> reviewModels=new ArrayList<>();
+        List<LocationReview> reviews=new ArrayList<>();
+        reviewRepository.findByLocation(location_id).forEach(reviews::add);
+        for (LocationReview review:
+                reviews) {
+            try {
+                User user=userDao.findById(review.getUser_id());
+                reviewModels.add(new LocationReviewModel(
+                        review.getLocation_review_id(),
+                        review.getLocation_rating(),
+                        user.getUser_id(),
+                        user.getFirst_name(),
+                        user.getLast_name(),
+                        user.getUser_email(),
+                        user.getUser_address(),
+                        user.getUser_gender(),
+                        user.getUser_dob(),
+                        user.getPrimary_num(),
+                        user.getNum1(),
+                        user.getNum2()
+                ));
+            } catch (ResourceNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return reviewModels;
     }
 }
