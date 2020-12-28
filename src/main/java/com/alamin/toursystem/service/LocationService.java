@@ -2,7 +2,6 @@ package com.alamin.toursystem.service;
 
 import com.alamin.toursystem.dao.LocationDao;
 import com.alamin.toursystem.dao.LocationReviewDao;
-import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.Location;
 import com.alamin.toursystem.model.LocationReviewModel;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
@@ -11,7 +10,6 @@ import com.alamin.toursystem.model.LocationModel;
 import com.alamin.toursystem.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -22,11 +20,9 @@ public class LocationService implements LocationDao {
     private LocationReviewDao reviewDao;
     @Override
     public List<Location> getAll() {
-
        List<Location> locationList=new ArrayList<>();
         repository.findAll().forEach(locationList::add);
         return locationList;
-
     }
 
     @Override
@@ -34,7 +30,34 @@ public class LocationService implements LocationDao {
         Location review=repository.findById(location_id).orElseThrow(ResourceNotFoundException::new);
         return review;
     }
+    @Override
+    public List<LocationModel> getAllLocation() {
+        List<Location> locations=getAll();
+        List<LocationModel> locationList=new ArrayList<>();
 
+        for (Location location:locations) {
+
+            List<LocationReviewModel> reviewList=reviewDao.findByLocationId(location.getLocation_id());
+            locationList.add(new LocationModel(
+                    location.getLocation_id(),
+                    location.getLocation_name(),
+                    reviewList
+            ));
+        }
+        return locationList;
+    }
+    @Override
+    public LocationModel findByLocationId(long location_id) throws ResourceNotFoundException {
+
+        Location location=repository.findById(location_id).orElseThrow(ResourceNotFoundException::new);
+        List<LocationReviewModel> reviewList=reviewDao.findByLocationId(location.getLocation_id());
+        LocationModel locationModel=new LocationModel(
+                location.getLocation_id(),
+                location.getLocation_name(),
+                reviewList
+        );
+        return locationModel;
+    }
     @Override
     public Location create(Location model) throws ResourceAlreadyExistException {
 
@@ -70,34 +93,4 @@ public class LocationService implements LocationDao {
             throw new ResourceNotFoundException();
         }
     }
-    @Override
-    public List<LocationModel> getAllLocation() {
-        List<Location> locations=getAll();
-        List<LocationModel> locationList=new ArrayList<>();
-
-        for (Location location:locations) {
-
-            List<LocationReviewModel> reviewList=reviewDao.findByLocationId(location.getLocation_id());
-            locationList.add(new LocationModel(
-                    location.getLocation_id(),
-                    location.getLocation_name(),
-                    reviewList
-            ));
-        }
-        return locationList;
-    }
-    @Override
-    public LocationModel findByLocationId(long location_id) throws ResourceNotFoundException {
-
-        Location location=repository.findById(location_id).orElseThrow(ResourceNotFoundException::new);
-        List<LocationReviewModel> reviewList=reviewDao.findByLocationId(location.getLocation_id());
-        LocationModel locationModel=new LocationModel(
-                location.getLocation_id(),
-                location.getLocation_name(),
-                reviewList
-        );
-        return locationModel;
-    }
-
-
 }

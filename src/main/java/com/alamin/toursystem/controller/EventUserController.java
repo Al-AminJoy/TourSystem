@@ -5,6 +5,7 @@ import com.alamin.toursystem.entity.EventUser;
 import com.alamin.toursystem.entity.LocationReview;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
+import com.alamin.toursystem.model.EventUserModel;
 import com.alamin.toursystem.model.LocationReviewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import java.util.List;
 public class EventUserController {
     @Autowired
     private EventUserDao dao;
-    @GetMapping("")
+    /*@GetMapping("")
     public ResponseEntity<List<EventUser>> readReviews(){
         return ResponseEntity.ok(dao.getAll());
     }
@@ -31,6 +32,14 @@ public class EventUserController {
         }
     }
 
+     */
+    @GetMapping("/{event_id}")
+    public ResponseEntity<List<EventUserModel>>readReview(@PathVariable long event_id) {
+        try {
+            return ResponseEntity.ok(dao.findUsersByEvent(event_id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }}
     @PostMapping("")
     public ResponseEntity<EventUser> createReview(@RequestBody EventUser model) {
         try {

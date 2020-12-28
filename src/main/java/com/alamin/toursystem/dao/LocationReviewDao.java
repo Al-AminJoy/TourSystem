@@ -8,10 +8,11 @@ import com.alamin.toursystem.model.LocationReviewModel;
 import java.util.List;
 
 public interface LocationReviewDao {
-    public List<LocationReview> getAll();
-    public LocationReview findById(long review_id)throws ResourceNotFoundException;
-    public LocationReview create(LocationReview model) throws ResourceAlreadyExistException;
-    public LocationReview update(LocationReview model)throws ResourceNotFoundException;
-    public LocationReview deleteById(long review_id) throws ResourceNotFoundException;
-    public List<LocationReviewModel> findByLocationId(long location_id) ;
+     List<LocationReview> getAll();
+     LocationReview findById(long review_id)throws ResourceNotFoundException;
+     List<LocationReviewModel> findByLocationId(long location_id) ;
+     LocationReview create(LocationReview model) throws ResourceAlreadyExistException;
+     LocationReview update(LocationReview model)throws ResourceNotFoundException;
+     LocationReview deleteById(long review_id) throws ResourceNotFoundException;
+
 }

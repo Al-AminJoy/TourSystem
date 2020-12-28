@@ -18,6 +18,4 @@ public class AgencyModel {
     private String agency_number2;
     private String agency_email;
     private List<AgencyReviewModel> reviewModels;
-
-
 }

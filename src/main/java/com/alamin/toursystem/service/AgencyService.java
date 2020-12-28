@@ -2,15 +2,11 @@ package com.alamin.toursystem.service;
 
 import com.alamin.toursystem.dao.AgencyDao;
 import com.alamin.toursystem.dao.AgencyReviewDao;
-import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.*;
-import com.alamin.toursystem.entity.Number;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.model.AgencyModel;
 import com.alamin.toursystem.model.AgencyReviewModel;
-import com.alamin.toursystem.model.LocationModel;
-import com.alamin.toursystem.model.LocationReviewModel;
 import com.alamin.toursystem.repository.AgencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +32,43 @@ public class AgencyService implements AgencyDao {
         Agency result=repository.findById(agency_id).orElseThrow(ResourceNotFoundException::new);
         return result;
     }
+    @Override
+    public List<AgencyModel> getAllAgency() {
+        List<Agency> agencies=getAll();
+        List<AgencyModel> models=new ArrayList<>();
 
+        for (Agency agency:agencies) {
+
+            List<AgencyReviewModel> reviewList=reviewDao.findByAgencyId(agency.getAgency_id());
+            models.add(new AgencyModel(
+                    agency.getAgency_id(),
+                    agency.getAgency_name(),
+                    agency.getAgency_address(),
+                    agency.getAgency_primary_num(),
+                    agency.getAgency_number1(),
+                    agency.getAgency_number2(),
+                    agency.getAgency_email(),
+                    reviewList
+            ));
+        }
+        return models;
+    }
+    @Override
+    public AgencyModel findByAgencyId(long agency_id) throws ResourceNotFoundException {
+        Agency agency=repository.findById(agency_id).orElseThrow(ResourceNotFoundException::new);
+        List<AgencyReviewModel> reviewList=reviewDao.findByAgencyId(agency.getAgency_id());
+        AgencyModel locationModel=new AgencyModel(
+                agency.getAgency_id(),
+                agency.getAgency_name(),
+                agency.getAgency_address(),
+                agency.getAgency_primary_num(),
+                agency.getAgency_number1(),
+                agency.getAgency_number2(),
+                agency.getAgency_email(),
+                reviewList
+        );
+        return locationModel;
+    }
     @Override
     public Agency create(Agency model) throws ResourceAlreadyExistException {
 
@@ -79,43 +111,4 @@ public class AgencyService implements AgencyDao {
             throw new ResourceNotFoundException();
         }
     }
-    @Override
-    public List<AgencyModel> getAllAgency() {
-        List<Agency> agencies=getAll();
-        List<AgencyModel> models=new ArrayList<>();
-
-        for (Agency agency:agencies) {
-
-            List<AgencyReviewModel> reviewList=reviewDao.findByAgencyId(agency.getAgency_id());
-            models.add(new AgencyModel(
-                    agency.getAgency_id(),
-                    agency.getAgency_name(),
-                    agency.getAgency_address(),
-                    agency.getAgency_primary_num(),
-                    agency.getAgency_number1(),
-                    agency.getAgency_number2(),
-                    agency.getAgency_email(),
-                    reviewList
-            ));
-        }
-        return models;
-    }
-    @Override
-    public AgencyModel findByAgencyId(long agency_id) throws ResourceNotFoundException {
-        Agency agency=repository.findById(agency_id).orElseThrow(ResourceNotFoundException::new);
-        List<AgencyReviewModel> reviewList=reviewDao.findByAgencyId(agency.getAgency_id());
-        AgencyModel locationModel=new AgencyModel(
-                agency.getAgency_id(),
-                agency.getAgency_name(),
-                agency.getAgency_address(),
-                agency.getAgency_primary_num(),
-                agency.getAgency_number1(),
-                agency.getAgency_number2(),
-                agency.getAgency_email(),
-                reviewList
-        );
-        return locationModel;
-    }
-
-
 }

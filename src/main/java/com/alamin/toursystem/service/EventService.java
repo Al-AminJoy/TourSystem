@@ -1,14 +1,17 @@
 package com.alamin.toursystem.service;
 
+import com.alamin.toursystem.dao.AgencyDao;
 import com.alamin.toursystem.dao.EventDao;
+import com.alamin.toursystem.dao.LocationDao;
 import com.alamin.toursystem.entity.Event;
 import com.alamin.toursystem.entity.Location;
-import com.alamin.toursystem.entity.Name;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
+import com.alamin.toursystem.model.AgencyModel;
+import com.alamin.toursystem.model.EventModel;
+import com.alamin.toursystem.model.LocationModel;
 import com.alamin.toursystem.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +20,10 @@ import java.util.List;
 public class EventService implements EventDao {
     @Autowired
     private EventRepository repository;
+    @Autowired
+    private LocationDao locationDao;
+    @Autowired
+    private AgencyDao agencyDao;
     @Override
     public List<Event> getAll() {
         List<Event> list=new ArrayList<>();
@@ -29,7 +36,31 @@ public class EventService implements EventDao {
         Event result=repository.findById(event_id).orElseThrow(ResourceNotFoundException::new);
         return result;
     }
-
+    @Override
+    public List<EventModel> getEvents() {
+        List<Event> list;
+        list=getAll();
+        List<EventModel> models=new ArrayList<>();
+        for (Event event:list){
+            try {
+                LocationModel location=locationDao.findByLocationId(event.getLocation_id());
+                AgencyModel agency=agencyDao.findByAgencyId(event.getAgency_id());
+                models.add(new EventModel(
+                        event.getEvent_id(),
+                        event.getPackage_cost(),
+                        event.getPeople(),
+                        event.getBordering_point(),
+                        event.getEvent_date(),
+                        event.getEvent_description(),
+                        location,
+                        agency
+                ));
+            } catch (ResourceNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return models;
+    }
     @Override
     public Event create(Event model) throws ResourceAlreadyExistException {
         if (repository.existsById(model.getEvent_id())){
@@ -54,6 +85,15 @@ public class EventService implements EventDao {
 
     @Override
     public Event deleteById(long event_id) throws ResourceNotFoundException {
-        return null;
+        if (repository.existsById(event_id)){
+            Event deleted=repository.findById(event_id).get();
+            repository.deleteById(event_id);
+            return deleted;
+        }
+        else{
+            throw new ResourceNotFoundException();
+        }
     }
+
+
 }

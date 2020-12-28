@@ -7,10 +7,12 @@ import com.alamin.toursystem.model.AgencyReviewModel;
 import java.util.List;
 
 public interface AgencyReviewDao {
-    public List<AgencyReview> getAll();
-    public AgencyReview findById(long review_id)throws ResourceNotFoundException;
-    public AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException;
-    public AgencyReview update(AgencyReview model)throws ResourceNotFoundException;
-    public AgencyReview deleteById(long review_id) throws ResourceNotFoundException;
-    public List<AgencyReviewModel> findByAgencyId(long agency_id);
+
+     List<AgencyReview> getAll();
+     AgencyReview findById(long review_id)throws ResourceNotFoundException;
+     List<AgencyReviewModel> findByAgencyId(long agency_id);
+     AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException;
+     AgencyReview update(AgencyReview model)throws ResourceNotFoundException;
+     AgencyReview deleteById(long review_id) throws ResourceNotFoundException;
+
 }

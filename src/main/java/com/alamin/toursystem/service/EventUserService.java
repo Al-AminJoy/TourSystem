@@ -1,11 +1,12 @@
 package com.alamin.toursystem.service;
 
 import com.alamin.toursystem.dao.EventUserDao;
-import com.alamin.toursystem.entity.Event;
+import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.EventUser;
-import com.alamin.toursystem.entity.Name;
+import com.alamin.toursystem.entity.User;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
+import com.alamin.toursystem.model.EventUserModel;
 import com.alamin.toursystem.repository.EventUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.List;
 public class EventUserService implements EventUserDao {
     @Autowired
     private EventUserRepository repository;
+    @Autowired
+    private UserDao userDao;
     @Override
     public List<EventUser> getAll() {
         List<EventUser> list=new ArrayList<>();
@@ -31,6 +34,22 @@ public class EventUserService implements EventUserDao {
     }
 
     @Override
+    public List<EventUserModel> findUsersByEvent(long event_id) throws ResourceNotFoundException {
+        List<EventUser> eventUsers=new ArrayList<>();
+        repository.findByEvent(event_id).forEach(eventUsers::add);
+        List<EventUserModel> eventUserModels=new ArrayList<>();
+        for (EventUser eventUser:eventUsers){
+            User user =userDao.findById(eventUser.getUser_id());
+            eventUserModels.add(new EventUserModel(
+                    eventUser.getEvent_id(),
+                    user
+            ));
+        }
+        return eventUserModels;
+    }
+
+
+    @Override
     public EventUser create(EventUser model) throws ResourceAlreadyExistException {
         if (repository.existsById(model.getEvent_user_id())){
             throw new ResourceAlreadyExistException();
@@ -43,7 +62,18 @@ public class EventUserService implements EventUserDao {
 
     @Override
     public EventUser update(EventUser model) throws ResourceNotFoundException {
-       return null;
+       EventUser user=new EventUser(
+               model.getEvent_user_id(),
+               model.getEvent_id(),
+               model.getUser_id()
+       );
+       if (repository.existsById(model.getEvent_user_id())){
+           EventUser updated=repository.save(user);
+           return updated;
+       }
+       else {
+           throw new ResourceNotFoundException();
+       }
     }
 
     @Override

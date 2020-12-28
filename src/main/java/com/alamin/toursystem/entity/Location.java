@@ -15,8 +15,4 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long location_id;
     private String location_name;
-
-    public Location(String location_name) {
-        this.location_name = location_name;
-    }
 }

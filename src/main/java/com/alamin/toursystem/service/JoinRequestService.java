@@ -2,10 +2,11 @@ package com.alamin.toursystem.service;
 
 import com.alamin.toursystem.dao.JoinRequestDao;
 import com.alamin.toursystem.dao.UserDao;
+import com.alamin.toursystem.entity.CancelRequest;
 import com.alamin.toursystem.entity.JoinRequest;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
-import com.alamin.toursystem.model.EventRequest;
+import com.alamin.toursystem.model.JoinRequestModel;
 import com.alamin.toursystem.repository.JoinRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,13 @@ public class JoinRequestService implements JoinRequestDao {
         return list;
     }
     @Override
-    public List<EventRequest> getRequest(long event_id) throws ResourceNotFoundException {
+    public List<JoinRequestModel> getRequest(long event_id) throws ResourceNotFoundException {
         List<JoinRequest> list=new ArrayList<>();
         repository.findByEvent(event_id).forEach(list::add);
-        List<EventRequest> requestList=new ArrayList<>();
+        List<JoinRequestModel> requestList=new ArrayList<>();
         for (JoinRequest request:list
         ) {
-          requestList.add(new EventRequest(
+          requestList.add(new JoinRequestModel(
                     request.getJoin_req_id(),
                     request.getJoin_req_time(),
                     request.getEvent_id(),
@@ -63,7 +64,20 @@ public class JoinRequestService implements JoinRequestDao {
 
     @Override
     public JoinRequest update(JoinRequest model) throws ResourceNotFoundException {
-        return null;
+        JoinRequest request=new JoinRequest(
+                model.getJoin_req_id(),
+                model.getJoin_req_time(),
+                model.getUser_id(),
+                model.getEvent_id(),
+                model.isJoin_req_accepted()
+        );
+        if (repository.existsById(model.getJoin_req_id())){
+            JoinRequest updated=repository.save(request);
+            return updated;
+        }
+        else {
+            throw new  ResourceNotFoundException();
+        }
     }
 
     @Override

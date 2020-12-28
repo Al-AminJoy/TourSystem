@@ -4,6 +4,7 @@ import com.alamin.toursystem.dao.EventDao;
 import com.alamin.toursystem.entity.Event;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
+import com.alamin.toursystem.model.EventModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.List;
 public class EventController {
     @Autowired
     private EventDao dao;
-    @GetMapping("")
+   /* @GetMapping("")
     public ResponseEntity<List<Event>> readReviews(){
         return ResponseEntity.ok(dao.getAll());
     }
@@ -31,6 +32,11 @@ public class EventController {
         }
     }
 
+    */
+   @GetMapping("")
+   public ResponseEntity<List<EventModel>> readReviews(){
+       return ResponseEntity.ok(dao.getEvents());
+   }
     @PostMapping("")
     public ResponseEntity<Event> createReview(@RequestBody Event model) {
         try {

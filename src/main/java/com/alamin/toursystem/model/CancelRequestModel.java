@@ -4,15 +4,16 @@ import com.alamin.toursystem.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventRequest {
-    private long join_req_id;
-    private LocalDate join_req_time;
+@ToString
+public class CancelRequestModel {
+    private long cancel_req_id;
+    private LocalDate cancel_req_time;
     private long event_id;
     private User user;
 }

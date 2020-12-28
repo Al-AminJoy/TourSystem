@@ -33,7 +33,37 @@ public class AgencyReviewService implements AgencyReviewDao {
         AgencyReview review=repository.findById(review_id).orElseThrow(ResourceNotFoundException::new);
         return review;
     }
+    @Override
+    public List<AgencyReviewModel> findByAgencyId(long agency_id) {
+        List<AgencyReviewModel> reviewModels=new ArrayList<>();
+        List<AgencyReview> reviews=new ArrayList<>();
+        repository.findByAgency(agency_id).forEach(reviews::add);
+        for (AgencyReview review:
+                reviews) {
+            try {
+                User user=userDao.findById(review.getUser_id());
+                reviewModels.add(new AgencyReviewModel(
+                        review.getAgency_review_id(),
+                        review.getAgency_rating(),
+                        review.getAgency_review_comment(),
+                        user.getUser_id(),
+                        user.getFirst_name(),
+                        user.getLast_name(),
+                        user.getUser_email(),
+                        user.getUser_address(),
+                        user.getUser_gender(),
+                        user.getUser_dob(),
+                        user.getPrimary_num(),
+                        user.getNum1(),
+                        user.getNum2()
+                ));
+            } catch (ResourceNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
+        return reviewModels;
+    }
     @Override
     public AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException {
         if (repository.existsById(model.getAgency_review_id())){
@@ -73,38 +103,4 @@ public class AgencyReviewService implements AgencyReviewDao {
             throw new ResourceNotFoundException();
         }
     }
-
-    @Override
-    public List<AgencyReviewModel> findByAgencyId(long agency_id) {
-        List<AgencyReviewModel> reviewModels=new ArrayList<>();
-        List<AgencyReview> reviews=new ArrayList<>();
-        repository.findByAgency(agency_id).forEach(reviews::add);
-        for (AgencyReview review:
-                reviews) {
-            try {
-                User user=userDao.findById(review.getUser_id());
-                reviewModels.add(new AgencyReviewModel(
-                        review.getAgency_review_id(),
-                        review.getAgency_rating(),
-                        review.getAgency_review_comment(),
-                        user.getUser_id(),
-                        user.getFirst_name(),
-                        user.getLast_name(),
-                        user.getUser_email(),
-                        user.getUser_address(),
-                        user.getUser_gender(),
-                        user.getUser_dob(),
-                        user.getPrimary_num(),
-                        user.getNum1(),
-                        user.getNum2()
-                ));
-            } catch (ResourceNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return reviewModels;
-    }
-
-
 }

@@ -1,23 +1,22 @@
-package com.alamin.toursystem.entity;
+package com.alamin.toursystem.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.persistence.*;
+import lombok.ToString;
+
 import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Event {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@ToString
+public class EventModel {
     private long event_id;
     private long package_cost;
     private long people;
     private String bordering_point;
     private LocalDate event_date;
     private String event_description;
-    private long location_id;
-    private long agency_id;
+    private LocationModel location;
+    private AgencyModel agency;
 }

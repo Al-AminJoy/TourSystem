@@ -3,14 +3,18 @@ package com.alamin.toursystem.dao;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.entity.User;
+import com.alamin.toursystem.model.UserModel;
 
 import java.util.List;
 
 public interface UserDao {
-    public List<User> getAll();
-    public User findById(long user_id)throws ResourceNotFoundException;
-    public User create(User model) throws ResourceAlreadyExistException;
-    public User update(User model)throws ResourceNotFoundException;
-    public User deleteById(long user_id) throws ResourceNotFoundException;
+     List<User> getAll();
+     User findById(long user_id)throws ResourceNotFoundException;
+     UserModel findUserById(long user_id) throws ResourceNotFoundException;
+     List<UserModel> getUsers();
+     User create(User model) throws ResourceAlreadyExistException;
+     User update(User model)throws ResourceNotFoundException;
+     User deleteById(long user_id) throws ResourceNotFoundException;
+
 
 }

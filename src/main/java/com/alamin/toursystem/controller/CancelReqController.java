@@ -6,6 +6,8 @@ import com.alamin.toursystem.entity.CancelRequest;
 import com.alamin.toursystem.entity.JoinRequest;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
+import com.alamin.toursystem.model.CancelRequestModel;
+import com.alamin.toursystem.model.JoinRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ import java.util.List;
 public class CancelReqController {
     @Autowired
     private CancelRequestDao dao;
-    @GetMapping("")
+    /*@GetMapping("")
     public ResponseEntity<List<CancelRequest>> readUsers() {
         return ResponseEntity.ok(dao.getAll());
     }
@@ -32,6 +34,16 @@ public class CancelReqController {
         }
     }
 
+
+     */
+    @GetMapping("/{event_id}")
+    public ResponseEntity<List<CancelRequestModel>> readUsers(@PathVariable long event_id ) {
+        try {
+            return ResponseEntity.ok(dao.getRequest(event_id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @PostMapping("")
     public ResponseEntity<CancelRequest> createUser(@RequestBody CancelRequest model) {
         try {
