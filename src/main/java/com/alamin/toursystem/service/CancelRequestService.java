@@ -1,6 +1,7 @@
 package com.alamin.toursystem.service;
 
 import com.alamin.toursystem.dao.CancelRequestDao;
+import com.alamin.toursystem.dao.EventDao;
 import com.alamin.toursystem.dao.JoinRequestDao;
 import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.CancelRequest;
@@ -23,6 +24,8 @@ public class CancelRequestService implements CancelRequestDao {
     private CancelRequestRepository repository;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private EventDao eventDao;
     @Override
     public List<CancelRequest> getAll() {
         List<CancelRequest> list=new ArrayList<>();
@@ -54,10 +57,16 @@ public class CancelRequestService implements CancelRequestDao {
         return requestList;
     }
     @Override
-    public CancelRequest create(CancelRequest model) throws ResourceAlreadyExistException {
+    public CancelRequest create(CancelRequest model) throws ResourceAlreadyExistException,ResourceNotFoundException {
         model.setCancel_req_accepted(false);
         if (repository.existsById(model.getCancel_req_id())){
             throw new ResourceAlreadyExistException();
+        }
+        else if (eventDao.findByExist(model.getEvent_id())==false){
+            throw new ResourceNotFoundException();
+        }
+        else if (userDao.findByExist(model.getUser_id())==false){
+            throw new ResourceNotFoundException();
         }
         else {
             CancelRequest created=repository.save(model);
@@ -75,8 +84,17 @@ public class CancelRequestService implements CancelRequestDao {
                 model.isCancel_req_accepted()
         );
         if (repository.existsById(model.getCancel_req_id())){
-            CancelRequest updated=repository.save(request);
-            return updated;
+            if (eventDao.findByExist(model.getEvent_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else if (userDao.findByExist(model.getUser_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else {
+                CancelRequest updated=repository.save(request);
+                return updated;
+            }
+
         }
         else {
             throw new  ResourceNotFoundException();

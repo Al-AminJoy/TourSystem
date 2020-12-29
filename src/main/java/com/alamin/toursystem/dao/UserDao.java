@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface UserDao {
      List<User> getAll();
+     boolean findByExist(long user_id);
      User findById(long user_id)throws ResourceNotFoundException;
      UserModel findUserById(long user_id) throws ResourceNotFoundException;
      List<UserModel> getUsers();

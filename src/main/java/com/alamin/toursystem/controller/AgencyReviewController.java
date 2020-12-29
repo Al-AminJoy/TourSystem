@@ -32,8 +32,21 @@ public class AgencyReviewController {
     @PostMapping("")
     public ResponseEntity<AgencyReview> createReview(@RequestBody AgencyReview model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
-        } catch (ResourceAlreadyExistException e) {
+            if ( model.getAgency_rating()<=0
+                    ||model.getAgency_id()<=0
+                    ||model.getUser_id()<=0){
+                return ResponseEntity.badRequest().build();
+            }
+            else{
+                if (model.getAgency_rating()>5||model.getAgency_review_comment().length()>255){
+                    return ResponseEntity.badRequest().build();
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
+                }
+            }
+
+        } catch (ResourceAlreadyExistException | ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -42,7 +55,21 @@ public class AgencyReviewController {
     @PutMapping("")
     public ResponseEntity<AgencyReview> updateReview(@RequestBody AgencyReview model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
+            if ( model.getAgency_review_id()<=0
+                    ||model.getAgency_rating()<=0
+                    ||model.getAgency_id()<=0
+                    ||model.getUser_id()<=0){
+                return ResponseEntity.badRequest().build();
+            }
+            else{
+                if (model.getAgency_rating()>5||model.getAgency_review_comment().length()>255){
+                    return ResponseEntity.badRequest().build();
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
+                }
+            }
+
         } catch ( ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
 

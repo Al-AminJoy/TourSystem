@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface AgencyDao {
      List<Agency> getAll();
+     boolean findByExist(long agency_id);
      Agency findById(long agency_id)throws ResourceNotFoundException;
      AgencyModel findByAgencyId(long agency_id) throws ResourceNotFoundException;
      List<AgencyModel> getAllAgency();

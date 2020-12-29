@@ -12,7 +12,7 @@ public interface CancelRequestDao {
      List<CancelRequest> getAll();
      CancelRequest findById(long req_id)throws ResourceNotFoundException;
      List<CancelRequestModel> getRequest(long event_id) throws ResourceNotFoundException ;
-     CancelRequest create(CancelRequest model) throws ResourceAlreadyExistException;
+     CancelRequest create(CancelRequest model) throws ResourceAlreadyExistException, ResourceNotFoundException;
      CancelRequest update(CancelRequest model)throws ResourceNotFoundException;
      CancelRequest deleteById(long req_id) throws ResourceNotFoundException;
 

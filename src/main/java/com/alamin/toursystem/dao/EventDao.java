@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface EventDao {
      List<Event> getAll();
+     boolean findByExist(long event_id);
      Event findById(long event_id)throws ResourceNotFoundException;
      List<EventModel> getEvents();
      Event create(Event model) throws ResourceAlreadyExistException;

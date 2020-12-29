@@ -32,6 +32,16 @@ public class EventService implements EventDao {
     }
 
     @Override
+    public boolean findByExist(long event_id) {
+        if (repository.existsById(event_id)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
     public Event findById(long event_id) throws ResourceNotFoundException {
         Event result=repository.findById(event_id).orElseThrow(ResourceNotFoundException::new);
         return result;

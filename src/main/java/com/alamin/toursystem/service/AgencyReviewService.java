@@ -1,14 +1,12 @@
 package com.alamin.toursystem.service;
 
+import com.alamin.toursystem.dao.AgencyDao;
 import com.alamin.toursystem.dao.AgencyReviewDao;
 import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.*;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
-import com.alamin.toursystem.model.AgencyModel;
 import com.alamin.toursystem.model.AgencyReviewModel;
-import com.alamin.toursystem.model.LocationModel;
-import com.alamin.toursystem.model.LocationReviewModel;
 import com.alamin.toursystem.repository.AgencyReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +16,12 @@ import java.util.List;
 @Service
 public class AgencyReviewService implements AgencyReviewDao {
 
-    @Autowired private AgencyReviewRepository repository;
+    @Autowired
+    private AgencyReviewRepository repository;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private AgencyDao agencyDao;
     @Override
     public List<AgencyReview> getAll() {
         List<AgencyReview> reviewList=new ArrayList<>();
@@ -65,9 +66,15 @@ public class AgencyReviewService implements AgencyReviewDao {
         return reviewModels;
     }
     @Override
-    public AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException {
+    public AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException,ResourceNotFoundException {
         if (repository.existsById(model.getAgency_review_id())){
             throw new ResourceAlreadyExistException();
+        }
+        else if (agencyDao.findByExist(model.getAgency_id())==false){
+            throw new ResourceNotFoundException();
+        }
+        else if (userDao.findByExist(model.getUser_id())==false){
+            throw new ResourceNotFoundException();
         }
         else {
             AgencyReview savedReview=repository.save(model);
@@ -84,9 +91,19 @@ public class AgencyReviewService implements AgencyReviewDao {
                 model.getAgency_id(),
                 model.getUser_id());
         if (repository.existsById(model.getAgency_review_id())){
-            AgencyReview updatedReview=repository.save(review);
-            return updatedReview;
+            if (agencyDao.findByExist(model.getAgency_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else if (userDao.findByExist(model.getUser_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else {
+                AgencyReview updatedReview=repository.save(review);
+                return updatedReview;
+            }
+
         }
+
         else {
             throw  new ResourceNotFoundException();
         }

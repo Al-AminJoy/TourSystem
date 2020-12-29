@@ -24,6 +24,16 @@ public class UserService implements UserDao {
     }
 
     @Override
+    public boolean findByExist(long user_id) {
+        if (repository.existsById(user_id)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
     public User findById(long user_id) throws ResourceNotFoundException {
         User user=repository.findById(user_id).orElseThrow(ResourceNotFoundException::new);
         return user;

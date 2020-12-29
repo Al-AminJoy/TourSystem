@@ -47,8 +47,16 @@ public class CancelReqController {
     @PostMapping("")
     public ResponseEntity<CancelRequest> createUser(@RequestBody CancelRequest model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
-        } catch (ResourceAlreadyExistException e) {
+            if (model.getCancel_req_time()==null
+                    ||model.getUser_id()<=0
+                    ||model.getEvent_id()<=0){
+                return ResponseEntity.badRequest().build();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
+            }
+
+        } catch (ResourceAlreadyExistException | ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }

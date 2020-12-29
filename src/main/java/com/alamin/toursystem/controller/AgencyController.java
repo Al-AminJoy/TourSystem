@@ -17,6 +17,7 @@ import java.util.List;
 public class AgencyController {
     @Autowired
     private AgencyDao dao;
+
     /*@GetMapping("")
     public ResponseEntity<List<Agency>> readUsers() {
         return ResponseEntity.ok(dao.getAll());
@@ -45,10 +46,30 @@ public class AgencyController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PostMapping("")
     public ResponseEntity<Agency> createUser(@RequestBody Agency model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
+            if (model.getAgency_name() == null
+                    ||model.getAgency_address() == null
+                    ||model.getAgency_email() == null
+                    ||model.getAgency_primary_num() == null){
+                return ResponseEntity.badRequest().build();
+            }
+            else {
+                if ((model.getAgency_name().length() > 32)
+                        && (model.getAgency_address().length() > 64)
+                        && (model.getAgency_email().length() > 32)
+                        && (model.getAgency_primary_num().length() > 11)
+                        && (model.getAgency_number1().length() > 11)
+                        && (model.getAgency_number2().length() > 11)) {
+                    return ResponseEntity.badRequest().build();
+                } else {
+
+                    return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
+                }
+            }
+
         } catch (ResourceAlreadyExistException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -57,8 +78,28 @@ public class AgencyController {
     @PutMapping("")
     public ResponseEntity<Agency> updateUser(@RequestBody Agency model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
-        } catch ( ResourceNotFoundException e) {
+            if (model.getAgency_id()<=0
+                    ||model.getAgency_name() == null
+                    ||model.getAgency_address() == null
+                    ||model.getAgency_email() == null
+                    ||model.getAgency_primary_num() == null){
+                return ResponseEntity.badRequest().build();
+            }
+            else {
+                if ((model.getAgency_name().length() > 32)
+                        && (model.getAgency_address().length() > 64)
+                        && (model.getAgency_email().length() > 32)
+                        && (model.getAgency_primary_num().length() > 11)
+                        && (model.getAgency_number1().length() > 11)
+                        && (model.getAgency_number2().length() > 11)) {
+                    return ResponseEntity.badRequest().build();
+
+                } else {
+                    return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
+                }
+            }
+
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
 
         }

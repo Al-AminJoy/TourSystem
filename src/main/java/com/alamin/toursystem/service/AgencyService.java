@@ -28,6 +28,16 @@ public class AgencyService implements AgencyDao {
     }
 
     @Override
+    public boolean findByExist(long agency_id) {
+        if (repository.existsById(agency_id)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
     public Agency findById(long agency_id) throws ResourceNotFoundException {
         Agency result=repository.findById(agency_id).orElseThrow(ResourceNotFoundException::new);
         return result;
