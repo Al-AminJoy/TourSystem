@@ -1,5 +1,6 @@
 package com.alamin.toursystem.service;
 
+import com.alamin.toursystem.dao.EventDao;
 import com.alamin.toursystem.dao.EventUserDao;
 import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.EventUser;
@@ -20,6 +21,8 @@ public class EventUserService implements EventUserDao {
     private EventUserRepository repository;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private EventDao eventDao;
     @Override
     public List<EventUser> getAll() {
         List<EventUser> list=new ArrayList<>();
@@ -41,6 +44,7 @@ public class EventUserService implements EventUserDao {
         for (EventUser eventUser:eventUsers){
             User user =userDao.findById(eventUser.getUser_id());
             eventUserModels.add(new EventUserModel(
+                    eventUser.getEvent_user_id(),
                     eventUser.getEvent_id(),
                     user
             ));
@@ -50,9 +54,15 @@ public class EventUserService implements EventUserDao {
 
 
     @Override
-    public EventUser create(EventUser model) throws ResourceAlreadyExistException {
+    public EventUser create(EventUser model) throws ResourceAlreadyExistException,ResourceNotFoundException {
         if (repository.existsById(model.getEvent_user_id())){
             throw new ResourceAlreadyExistException();
+        }
+        else if (userDao.findByExist(model.getUser_id())==false){
+            throw new ResourceNotFoundException();
+        }
+        else if (eventDao.findByExist(model.getEvent_id())==false){
+            throw new ResourceNotFoundException();
         }
         else {
             EventUser created=repository.save(model);
@@ -68,8 +78,17 @@ public class EventUserService implements EventUserDao {
                model.getUser_id()
        );
        if (repository.existsById(model.getEvent_user_id())){
-           EventUser updated=repository.save(user);
-           return updated;
+           if (userDao.findByExist(model.getUser_id())==false){
+               throw new ResourceNotFoundException();
+           }
+           else if (eventDao.findByExist(model.getEvent_id())==false){
+               throw new ResourceNotFoundException();
+           }
+           else {
+               EventUser updated=repository.save(user);
+               return updated;
+           }
+
        }
        else {
            throw new ResourceNotFoundException();

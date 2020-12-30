@@ -12,7 +12,7 @@ public interface EventUserDao {
      List<EventUser> getAll();
      EventUser findById(long event_user_id)throws ResourceNotFoundException;
      List<EventUserModel> findUsersByEvent(long event_id) throws ResourceNotFoundException;
-     EventUser create(EventUser model) throws ResourceAlreadyExistException;
+     EventUser create(EventUser model) throws ResourceAlreadyExistException, ResourceNotFoundException;
      EventUser update(EventUser model)throws ResourceNotFoundException;
      EventUser deleteById(long event_user_id) throws ResourceNotFoundException;
 }

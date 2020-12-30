@@ -1,5 +1,6 @@
 package com.alamin.toursystem.service;
 
+import com.alamin.toursystem.dao.EventDao;
 import com.alamin.toursystem.dao.JoinRequestDao;
 import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.CancelRequest;
@@ -20,6 +21,8 @@ public class JoinRequestService implements JoinRequestDao {
     private JoinRequestRepository repository;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private EventDao eventDao;
     @Override
     public List<JoinRequest> getAll() {
         List<JoinRequest> list=new ArrayList<>();
@@ -51,10 +54,16 @@ public class JoinRequestService implements JoinRequestDao {
     }
 
     @Override
-    public JoinRequest create(JoinRequest model) throws ResourceAlreadyExistException {
+    public JoinRequest create(JoinRequest model) throws ResourceAlreadyExistException,ResourceNotFoundException {
         model.setJoin_req_accepted(false);
         if (repository.existsById(model.getJoin_req_id())){
             throw new ResourceAlreadyExistException();
+        }
+        else if (userDao.findByExist(model.getUser_id())==false){
+            throw new ResourceNotFoundException();
+        }
+        else if (eventDao.findByExist(model.getEvent_id())==false){
+            throw new ResourceNotFoundException();
         }
         else {
             JoinRequest created=repository.save(model);
@@ -72,8 +81,17 @@ public class JoinRequestService implements JoinRequestDao {
                 model.isJoin_req_accepted()
         );
         if (repository.existsById(model.getJoin_req_id())){
-            JoinRequest updated=repository.save(request);
-            return updated;
+            if (userDao.findByExist(model.getUser_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else if (eventDao.findByExist(model.getEvent_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else {
+                JoinRequest updated=repository.save(request);
+                return updated;
+            }
+
         }
         else {
             throw new  ResourceNotFoundException();

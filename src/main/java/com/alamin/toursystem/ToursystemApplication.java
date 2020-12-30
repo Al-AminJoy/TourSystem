@@ -8,16 +8,11 @@ public class ToursystemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ToursystemApplication.class, args);
-
+//TODO: Login Entity with Security
 //TODO: Batch Processing
-//TODO: Change All Controllers Methods Name
-//TODO: Apply Conditions In Table Creation
-//TODO: Disable Unused Methods Code in Controller
 //TODo: Create Generic Method
-//TODO: Write Queries in property
 //TODO: Add Documentation
 //TODO: Format All Codes
-
     }
 
 }

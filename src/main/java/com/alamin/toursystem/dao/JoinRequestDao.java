@@ -11,7 +11,7 @@ public interface JoinRequestDao {
      List<JoinRequest> getAll();
      JoinRequest findById(long req_id)throws ResourceNotFoundException;
      List<JoinRequestModel> getRequest(long event_id) throws ResourceNotFoundException ;
-     JoinRequest create(JoinRequest model) throws ResourceAlreadyExistException;
+     JoinRequest create(JoinRequest model) throws ResourceAlreadyExistException, ResourceNotFoundException;
      JoinRequest update(JoinRequest model)throws ResourceNotFoundException;
      JoinRequest deleteById(long req_id) throws ResourceNotFoundException;
 

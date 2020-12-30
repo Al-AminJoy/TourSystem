@@ -11,7 +11,7 @@ public interface LocationReviewDao {
      List<LocationReview> getAll();
      LocationReview findById(long review_id)throws ResourceNotFoundException;
      List<LocationReviewModel> findByLocationId(long location_id) ;
-     LocationReview create(LocationReview model) throws ResourceAlreadyExistException;
+     LocationReview create(LocationReview model) throws ResourceAlreadyExistException, ResourceNotFoundException;
      LocationReview update(LocationReview model)throws ResourceNotFoundException;
      LocationReview deleteById(long review_id) throws ResourceNotFoundException;
 

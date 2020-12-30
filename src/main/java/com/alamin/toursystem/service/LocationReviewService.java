@@ -1,5 +1,6 @@
 package com.alamin.toursystem.service;
 
+import com.alamin.toursystem.dao.LocationDao;
 import com.alamin.toursystem.dao.LocationReviewDao;
 import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.entity.User;
@@ -20,6 +21,8 @@ public class LocationReviewService implements LocationReviewDao {
     private LocationReviewRepository reviewRepository;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private LocationDao locationDao;
 
     @Override
     public List<LocationReview> getAll() {
@@ -65,9 +68,15 @@ public class LocationReviewService implements LocationReviewDao {
         return reviewModels;
     }
     @Override
-    public LocationReview create(LocationReview model) throws ResourceAlreadyExistException {
+    public LocationReview create(LocationReview model) throws ResourceAlreadyExistException,ResourceNotFoundException {
         if (reviewRepository.existsById(model.getLocation_review_id())){
             throw new ResourceAlreadyExistException();
+        }
+        else if (locationDao.findByExist(model.getLocation_id())==false){
+            throw new ResourceNotFoundException();
+        }
+        else if (userDao.findByExist(model.getUser_id())==false){
+            throw new ResourceNotFoundException();
         }
         else {
             LocationReview savedReview=reviewRepository.save(model);
@@ -84,8 +93,17 @@ public class LocationReviewService implements LocationReviewDao {
                 model.getLocation_id(),
                 model.getUser_id());
         if (reviewRepository.existsById(model.getLocation_review_id())){
-            LocationReview updatedReview=reviewRepository.save(locationReview);
-            return updatedReview;
+            if (locationDao.findByExist(model.getLocation_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else if (userDao.findByExist(model.getUser_id())==false){
+                throw new ResourceNotFoundException();
+            }
+            else {
+                LocationReview updatedReview=reviewRepository.save(locationReview);
+                return updatedReview;
+            }
+
         }
         else {
             throw  new ResourceNotFoundException();

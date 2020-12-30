@@ -16,28 +16,24 @@ import java.util.List;
 public class AgencyReviewController {
     @Autowired
     private AgencyReviewDao dao;
-    @GetMapping("")
-    public ResponseEntity<List<AgencyReview>> readReviews(){
-        return ResponseEntity.ok(dao.getAll());
-    }
-    @GetMapping("/{agency_review_id}")
-    public ResponseEntity<AgencyReview> readReview(@PathVariable long agency_review_id) {
-        try {
-            return ResponseEntity.ok(dao.findById(agency_review_id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+    /**
+     *Takes AgencyReview object as input and returns an object of AgencyReview
+     */
     @PostMapping("")
     public ResponseEntity<AgencyReview> createReview(@RequestBody AgencyReview model) {
         try {
+            /**
+             *Does not allow null value as input
+             */
             if ( model.getAgency_rating()<=0
                     ||model.getAgency_id()<=0
                     ||model.getUser_id()<=0){
                 return ResponseEntity.badRequest().build();
             }
             else{
+                /**
+                 *checking the column value sizes
+                 */
                 if (model.getAgency_rating()>5||model.getAgency_review_comment().length()>255){
                     return ResponseEntity.badRequest().build();
                 }
@@ -51,10 +47,15 @@ public class AgencyReviewController {
         }
     }
 
-
+    /**
+     *Takes an AgencyReview with an agency_id as input and returns an object of AgencyReview
+     */
     @PutMapping("")
     public ResponseEntity<AgencyReview> updateReview(@RequestBody AgencyReview model) {
         try {
+            /**
+             *Does not allow null value as input
+             */
             if ( model.getAgency_review_id()<=0
                     ||model.getAgency_rating()<=0
                     ||model.getAgency_id()<=0
@@ -62,6 +63,9 @@ public class AgencyReviewController {
                 return ResponseEntity.badRequest().build();
             }
             else{
+                /**
+                 *checking the column value sizes
+                 */
                 if (model.getAgency_rating()>5||model.getAgency_review_comment().length()>255){
                     return ResponseEntity.badRequest().build();
                 }
@@ -75,7 +79,9 @@ public class AgencyReviewController {
 
         }
     }
-
+    /**
+     *Takes agency_review_id  as input and returns an object of AgencyReview after deleted the row
+     */
     @DeleteMapping("/{agency_review_id}")
     public ResponseEntity<AgencyReview> deleteReview(@PathVariable long agency_review_id) {
         try {

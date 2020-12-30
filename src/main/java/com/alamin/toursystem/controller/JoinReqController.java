@@ -15,39 +15,42 @@ import java.util.List;
 public class JoinReqController {
     @Autowired
     private JoinRequestDao dao;
-/*
-    @GetMapping("")
-    public ResponseEntity<List<JoinRequest>> readUsers() {
-        return ResponseEntity.ok(dao.getAll());
-    }
-    @GetMapping("/{join_req_id}")
-    public ResponseEntity<JoinRequest> readUser(@PathVariable long join_req_id) {
-        try {
-            return ResponseEntity.ok(dao.findById(join_req_id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    */
+    /**
+     *Takes event_id  as input and returns an object of JoinRequestModel
+     */
 @GetMapping("/{event_id}")
-public ResponseEntity<List<JoinRequestModel>> readUsers(@PathVariable long event_id ) {
+public ResponseEntity<List<JoinRequestModel>> readRequests(@PathVariable long event_id ) {
     try {
         return ResponseEntity.ok(dao.getRequest(event_id));
     } catch (ResourceNotFoundException e) {
         return ResponseEntity.notFound().build();
     }
 }
+    /**
+     *Takes JoinRequest object as input and returns an object of JoinRequest
+     */
     @PostMapping("")
-    public ResponseEntity<JoinRequest> createUser(@RequestBody JoinRequest model) {
+    public ResponseEntity<JoinRequest> createRequest(@RequestBody JoinRequest model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
-        } catch (ResourceAlreadyExistException e) {
+            /**
+             *Does not allow null value as input
+             */
+            if (model.getJoin_req_time()==null||model.getUser_id()<=0||model.getEvent_id()<=0){
+                return ResponseEntity.badRequest().build();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
+            }
+
+        } catch (ResourceAlreadyExistException | ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
-
+    /**
+     *Takes join_req_id  as input and returns an object of JoinRequest after deleted the row
+     */
     @DeleteMapping("/{join_req_id}")
-    public ResponseEntity<JoinRequest> deleteUser(@PathVariable long join_req_id) {
+    public ResponseEntity<JoinRequest> deleteRequest(@PathVariable long join_req_id) {
         try {
             return ResponseEntity.ok(dao.deleteById(join_req_id));
         } catch (ResourceNotFoundException e) {

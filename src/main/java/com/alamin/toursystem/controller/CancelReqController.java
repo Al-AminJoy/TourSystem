@@ -20,33 +20,26 @@ import java.util.List;
 public class CancelReqController {
     @Autowired
     private CancelRequestDao dao;
-    /*@GetMapping("")
-    public ResponseEntity<List<CancelRequest>> readUsers() {
-        return ResponseEntity.ok(dao.getAll());
-    }
-
-    @GetMapping("/{cancel_req_id}")
-    public ResponseEntity<CancelRequest> readUser(@PathVariable long cancel_req_id) {
-        try {
-            return ResponseEntity.ok(dao.findById(cancel_req_id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-
+    /**
+     *Takes event_id  as input and returns an object of CancelRequestModel
      */
     @GetMapping("/{event_id}")
-    public ResponseEntity<List<CancelRequestModel>> readUsers(@PathVariable long event_id ) {
+    public ResponseEntity<List<CancelRequestModel>> readReviews(@PathVariable long event_id ) {
         try {
             return ResponseEntity.ok(dao.getRequest(event_id));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
+    /**
+     *Takes CancelReques object as input and returns an object of CancelRequest
+     */
     @PostMapping("")
-    public ResponseEntity<CancelRequest> createUser(@RequestBody CancelRequest model) {
+    public ResponseEntity<CancelRequest> createRequest(@RequestBody CancelRequest model) {
         try {
+            /**
+             *Does not allow null value as input
+             */
             if (model.getCancel_req_time()==null
                     ||model.getUser_id()<=0
                     ||model.getEvent_id()<=0){
@@ -60,11 +53,11 @@ public class CancelReqController {
             return ResponseEntity.badRequest().build();
         }
     }
-
-
-
+    /**
+     *Takes cancel_req_id  as input and returns an object of AgencyReview after deleted the row
+     */
     @DeleteMapping("/{cancel_req_id}")
-    public ResponseEntity<CancelRequest> deleteUser(@PathVariable long cancel_req_id) {
+    public ResponseEntity<CancelRequest> deleteRequest(@PathVariable long cancel_req_id) {
         try {
             return ResponseEntity.ok(dao.deleteById(cancel_req_id));
         } catch (ResourceNotFoundException e) {

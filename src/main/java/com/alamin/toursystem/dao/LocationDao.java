@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface LocationDao {
      List<Location> getAll();
+     boolean findByExist(long location_id);
      Location findById(long location_id)throws ResourceNotFoundException;
      LocationModel findByLocationId(long location_id) throws ResourceNotFoundException;
      List<LocationModel> getAllLocation();

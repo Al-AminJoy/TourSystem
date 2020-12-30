@@ -13,10 +13,10 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long event_id;
-    @Column(nullable = false ,length = 10)
+    @Column(nullable = false ,length = 9)
     private long package_cost;
     @Column(nullable = false ,length = 3)
-    private long people;
+    private int people;
     @Column(nullable = false ,length = 32)
     private String bordering_point;
     @Column(nullable = false ,length = 32)

@@ -14,7 +14,7 @@ public interface EventDao {
      boolean findByExist(long event_id);
      Event findById(long event_id)throws ResourceNotFoundException;
      List<EventModel> getEvents();
-     Event create(Event model) throws ResourceAlreadyExistException;
+     Event create(Event model) throws ResourceAlreadyExistException, ResourceNotFoundException;
      Event update(Event model)throws ResourceNotFoundException;
      Event deleteById(long event_id) throws ResourceNotFoundException;
 

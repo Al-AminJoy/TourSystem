@@ -17,39 +17,26 @@ import java.util.List;
 public class AgencyController {
     @Autowired
     private AgencyDao dao;
-
-    /*@GetMapping("")
-    public ResponseEntity<List<Agency>> readUsers() {
-        return ResponseEntity.ok(dao.getAll());
-    }
-
-    @GetMapping("/{agency_id}")
-    public ResponseEntity<Agency> readUser(@PathVariable long agency_id) {
-        try {
-            return ResponseEntity.ok(dao.findById(agency_id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+    /**
+     *Takes agency_id as input and returns an object of Agency with its review
      */
-    @GetMapping("")
-    public ResponseEntity<List<AgencyModel>> readUsers() {
-        return ResponseEntity.ok(dao.getAllAgency());
-    }
-
     @GetMapping("/{agency_id}")
-    public ResponseEntity<AgencyModel> readUser(@PathVariable long agency_id) {
+    public ResponseEntity<AgencyModel> readAgency(@PathVariable long agency_id) {
         try {
             return ResponseEntity.ok(dao.findByAgencyId(agency_id));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
-
+    /**
+     *Takes Agency object as input and returns an object of Agency
+     */
     @PostMapping("")
-    public ResponseEntity<Agency> createUser(@RequestBody Agency model) {
+    public ResponseEntity<Agency> createAgency(@RequestBody Agency model) {
         try {
+            /**
+             *Does not allow null value as input
+             */
             if (model.getAgency_name() == null
                     ||model.getAgency_address() == null
                     ||model.getAgency_email() == null
@@ -57,6 +44,9 @@ public class AgencyController {
                 return ResponseEntity.badRequest().build();
             }
             else {
+                /**
+                 *checking the column value sizes
+                 */
                 if ((model.getAgency_name().length() > 32)
                         && (model.getAgency_address().length() > 64)
                         && (model.getAgency_email().length() > 32)
@@ -74,10 +64,15 @@ public class AgencyController {
             return ResponseEntity.badRequest().build();
         }
     }
-
+    /**
+     *Takes an Agency with an agency_id as input and returns an object of Agency
+     */
     @PutMapping("")
-    public ResponseEntity<Agency> updateUser(@RequestBody Agency model) {
+    public ResponseEntity<Agency> updateAgency(@RequestBody Agency model) {
         try {
+            /**
+             *Does not allow null value as input
+             */
             if (model.getAgency_id()<=0
                     ||model.getAgency_name() == null
                     ||model.getAgency_address() == null
@@ -86,6 +81,9 @@ public class AgencyController {
                 return ResponseEntity.badRequest().build();
             }
             else {
+                /**
+                 *Checking column value sizes
+                 */
                 if ((model.getAgency_name().length() > 32)
                         && (model.getAgency_address().length() > 64)
                         && (model.getAgency_email().length() > 32)
@@ -102,15 +100,6 @@ public class AgencyController {
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
 
-        }
-    }
-
-    @DeleteMapping("/{agency_id}")
-    public ResponseEntity<Agency> deleteUser(@PathVariable long agency_id) {
-        try {
-            return ResponseEntity.ok(dao.deleteById(agency_id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
         }
     }
 }

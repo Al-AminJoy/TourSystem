@@ -4,7 +4,6 @@ import com.alamin.toursystem.dao.AgencyDao;
 import com.alamin.toursystem.dao.EventDao;
 import com.alamin.toursystem.dao.LocationDao;
 import com.alamin.toursystem.entity.Event;
-import com.alamin.toursystem.entity.Location;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.model.AgencyModel;
@@ -72,9 +71,15 @@ public class EventService implements EventDao {
         return models;
     }
     @Override
-    public Event create(Event model) throws ResourceAlreadyExistException {
+    public Event create(Event model) throws ResourceAlreadyExistException,ResourceNotFoundException {
         if (repository.existsById(model.getEvent_id())){
             throw new ResourceAlreadyExistException();
+        }
+        else if (locationDao.findByExist(model.getLocation_id())==false){
+            throw new ResourceNotFoundException();
+        }
+        else if (agencyDao.findByExist(model.getAgency_id())==false){
+            throw new ResourceNotFoundException();
         }
         else {
             Event created=repository.save(model);
@@ -85,8 +90,17 @@ public class EventService implements EventDao {
     @Override
     public Event update(Event model) throws ResourceNotFoundException {
         if (repository.existsById(model.getEvent_id())){
-            Event updated=repository.save(model);
-            return updated;
+            if (locationDao.findByExist(model.getLocation_id())==false){
+                throw new ResourceNotFoundException();
+            }
+        else if (agencyDao.findByExist(model.getAgency_id())==false){
+                throw new ResourceNotFoundException();
+            }
+        else {
+                Event updated=repository.save(model);
+                return updated;
+            }
+
         }
         else {
             throw  new ResourceNotFoundException();

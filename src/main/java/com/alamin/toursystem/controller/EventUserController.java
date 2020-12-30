@@ -19,47 +19,62 @@ import java.util.List;
 public class EventUserController {
     @Autowired
     private EventUserDao dao;
-    /*@GetMapping("")
-    public ResponseEntity<List<EventUser>> readReviews(){
-        return ResponseEntity.ok(dao.getAll());
-    }
-    @GetMapping("/{event_user_id}")
-    public ResponseEntity<EventUser> readReview(@PathVariable long event_user_id) {
-        try {
-            return ResponseEntity.ok(dao.findById(event_user_id));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+    /**
+     *Takes event_id  as input and returns an object of EventUserModel
      */
     @GetMapping("/{event_id}")
-    public ResponseEntity<List<EventUserModel>>readReview(@PathVariable long event_id) {
+    public ResponseEntity<List<EventUserModel>>readEventUsers(@PathVariable long event_id) {
         try {
             return ResponseEntity.ok(dao.findUsersByEvent(event_id));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }}
+
+    /**
+     *Takes EventUser object as input and returns an object of EventUser
+     */
     @PostMapping("")
-    public ResponseEntity<EventUser> createReview(@RequestBody EventUser model) {
+    public ResponseEntity<EventUser> createEventUser(@RequestBody EventUser model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
-        } catch (ResourceAlreadyExistException e) {
+            /**
+             *Does not allow null value as input
+             */
+            if (model.getEvent_id()<=0||model.getUser_id()<=0){
+                return ResponseEntity.badRequest().build();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
+            }
+
+        } catch (ResourceAlreadyExistException | ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-
+    /**
+     *Takes an EventUser with an event_user_id as input and returns an object of EventUser
+     */
     @PutMapping("")
-    public ResponseEntity<EventUser> updateReview(@RequestBody EventUser model) {
+    public ResponseEntity<EventUser> updateEventUser(@RequestBody EventUser model) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
+            /**
+             *Does not allow null value as input
+             */
+            if (model.getEvent_user_id()<=0||model.getEvent_id()<=0||model.getUser_id()<=0){
+                return ResponseEntity.badRequest().build();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
+            }
+
         } catch ( ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
 
         }
     }
-
+    /**
+     *Takes event_user_id  as input and returns an object of EventUser after deleted the row
+     */
     @DeleteMapping("/{event_user_id}")
     public ResponseEntity<EventUser> deleteReview(@PathVariable long event_user_id) {
         try {

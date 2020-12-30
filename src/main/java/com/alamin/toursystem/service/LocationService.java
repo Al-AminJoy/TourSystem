@@ -26,6 +26,16 @@ public class LocationService implements LocationDao {
     }
 
     @Override
+    public boolean findByExist(long location_id) {
+        if (repository.existsById(location_id)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
     public Location findById(long location_id) throws ResourceNotFoundException {
         Location review=repository.findById(location_id).orElseThrow(ResourceNotFoundException::new);
         return review;
