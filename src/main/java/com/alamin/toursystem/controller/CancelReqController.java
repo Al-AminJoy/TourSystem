@@ -20,19 +20,21 @@ import java.util.List;
 public class CancelReqController {
     @Autowired
     private CancelRequestDao dao;
+
     /**
-     *Takes event_id  as input and returns an object of CancelRequestModel
+     * Takes event_id  as input and returns an object of CancelRequestModel
      */
     @GetMapping("/{event_id}")
-    public ResponseEntity<List<CancelRequestModel>> readReviews(@PathVariable long event_id ) {
+    public ResponseEntity<List<CancelRequestModel>> readReviews(@PathVariable long event_id) {
         try {
             return ResponseEntity.ok(dao.getRequest(event_id));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
     /**
-     *Takes CancelReques object as input and returns an object of CancelRequest
+     * Takes CancelReques object as input and returns an object of CancelRequest
      */
     @PostMapping("")
     public ResponseEntity<CancelRequest> createRequest(@RequestBody CancelRequest model) {
@@ -40,12 +42,11 @@ public class CancelReqController {
             /**
              *Does not allow null value as input
              */
-            if (model.getCancel_req_time()==null
-                    ||model.getUser_id()<=0
-                    ||model.getEvent_id()<=0){
+            if (model.getCancel_req_time() == null
+                    || model.getUser_id() <= 0
+                    || model.getEvent_id() <= 0) {
                 return ResponseEntity.badRequest().build();
-            }
-            else {
+            } else {
                 return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
             }
 
@@ -53,8 +54,9 @@ public class CancelReqController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     /**
-     *Takes cancel_req_id  as input and returns an object of AgencyReview after deleted the row
+     * Takes cancel_req_id  as input and returns an object of AgencyReview after deleted the row
      */
     @DeleteMapping("/{cancel_req_id}")
     public ResponseEntity<CancelRequest> deleteRequest(@PathVariable long cancel_req_id) {

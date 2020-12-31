@@ -16,23 +16,22 @@ import java.util.List;
 public class LocationReviewController {
     @Autowired
     private LocationReviewDao dao;
+
     /**
-     *Takes LocationReview object as input and returns an object of LocationReview
+     * Takes LocationReview object as input and returns an object of LocationReview
      */
     @PostMapping("")
     public ResponseEntity<LocationReview> createReview(@RequestBody LocationReview model) {
         try {
-            if(model.getLocation_rating()<=0||model.getLocation_id()<=0||model.getUser_id()<=0){
+            if (model.getLocation_rating() <= 0 || model.getLocation_id() <= 0 || model.getUser_id() <= 0) {
                 return ResponseEntity.badRequest().build();
-            }
-            else {
+            } else {
                 /**
                  *checking the column value sizes
                  */
-                if (model.getLocation_rating()>5||model.getLocation_review_comment().length()>255){
+                if (model.getLocation_rating() > 5 || model.getLocation_review_comment().length() > 255) {
                     return ResponseEntity.badRequest().build();
-                }
-                else {
+                } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
                 }
             }
@@ -43,7 +42,7 @@ public class LocationReviewController {
     }
 
     /**
-     *Takes an LocationReview with an location_review_id as input and returns an object of LocationReview
+     * Takes an LocationReview with an location_review_id as input and returns an object of LocationReview
      */
     @PutMapping("")
     public ResponseEntity<LocationReview> updateReview(@RequestBody LocationReview model) {
@@ -51,32 +50,31 @@ public class LocationReviewController {
             /**
              *Does not allow null value as input
              */
-            if(model.getLocation_review_id()<=0
-                    ||model.getLocation_rating()<=0
-                    ||model.getLocation_id()<=0
-                    ||model.getUser_id()<=0){
+            if (model.getLocation_review_id() <= 0
+                    || model.getLocation_rating() <= 0
+                    || model.getLocation_id() <= 0
+                    || model.getUser_id() <= 0) {
                 return ResponseEntity.badRequest().build();
-            }
-            else {
+            } else {
                 /**
                  *checking the column value sizes
                  */
-                if (model.getLocation_rating()>5
-                        ||model.getLocation_review_comment().length()>255){
+                if (model.getLocation_rating() > 5
+                        || model.getLocation_review_comment().length() > 255) {
                     return ResponseEntity.badRequest().build();
-                }
-                else {
+                } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
                 }
             }
 
-        } catch ( ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
 
         }
     }
+
     /**
-     *Takes location_review_id  as input and returns an object of LocationReview after deleted the row
+     * Takes location_review_id  as input and returns an object of LocationReview after deleted the row
      */
     @DeleteMapping("/{location_review_id}")
     public ResponseEntity<LocationReview> deleteReview(@PathVariable long location_review_id) {

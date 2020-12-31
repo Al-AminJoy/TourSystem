@@ -14,7 +14,7 @@ public class AgencyReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long agency_review_id;
-    @Column(nullable = false ,length = 1)
+    @Column(nullable = false, length = 1)
     private int agency_rating;
     @Column(length = 255)
     private String agency_review_comment;

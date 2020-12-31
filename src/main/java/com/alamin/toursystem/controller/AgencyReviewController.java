@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -16,8 +17,9 @@ import java.util.List;
 public class AgencyReviewController {
     @Autowired
     private AgencyReviewDao dao;
+
     /**
-     *Takes AgencyReview object as input and returns an object of AgencyReview
+     * Takes AgencyReview object as input and returns an object of AgencyReview
      */
     @PostMapping("")
     public ResponseEntity<AgencyReview> createReview(@RequestBody AgencyReview model) {
@@ -25,19 +27,17 @@ public class AgencyReviewController {
             /**
              *Does not allow null value as input
              */
-            if ( model.getAgency_rating()<=0
-                    ||model.getAgency_id()<=0
-                    ||model.getUser_id()<=0){
+            if (model.getAgency_rating() <= 0
+                    || model.getAgency_id() <= 0
+                    || model.getUser_id() <= 0) {
                 return ResponseEntity.badRequest().build();
-            }
-            else{
+            } else {
                 /**
                  *checking the column value sizes
                  */
-                if (model.getAgency_rating()>5||model.getAgency_review_comment().length()>255){
+                if (model.getAgency_rating() > 5 || model.getAgency_review_comment().length() > 255) {
                     return ResponseEntity.badRequest().build();
-                }
-                else {
+                } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
                 }
             }
@@ -48,7 +48,7 @@ public class AgencyReviewController {
     }
 
     /**
-     *Takes an AgencyReview with an agency_id as input and returns an object of AgencyReview
+     * Takes an AgencyReview with an agency_id as input and returns an object of AgencyReview
      */
     @PutMapping("")
     public ResponseEntity<AgencyReview> updateReview(@RequestBody AgencyReview model) {
@@ -56,31 +56,30 @@ public class AgencyReviewController {
             /**
              *Does not allow null value as input
              */
-            if ( model.getAgency_review_id()<=0
-                    ||model.getAgency_rating()<=0
-                    ||model.getAgency_id()<=0
-                    ||model.getUser_id()<=0){
+            if (model.getAgency_review_id() <= 0
+                    || model.getAgency_rating() <= 0
+                    || model.getAgency_id() <= 0
+                    || model.getUser_id() <= 0) {
                 return ResponseEntity.badRequest().build();
-            }
-            else{
+            } else {
                 /**
                  *checking the column value sizes
                  */
-                if (model.getAgency_rating()>5||model.getAgency_review_comment().length()>255){
+                if (model.getAgency_rating() > 5 || model.getAgency_review_comment().length() > 255) {
                     return ResponseEntity.badRequest().build();
-                }
-                else {
+                } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));
                 }
             }
 
-        } catch ( ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
 
         }
     }
+
     /**
-     *Takes agency_review_id  as input and returns an object of AgencyReview after deleted the row
+     * Takes agency_review_id  as input and returns an object of AgencyReview after deleted the row
      */
     @DeleteMapping("/{agency_review_id}")
     public ResponseEntity<AgencyReview> deleteReview(@PathVariable long agency_review_id) {

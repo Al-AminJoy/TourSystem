@@ -17,8 +17,9 @@ import java.util.List;
 public class AgencyController {
     @Autowired
     private AgencyDao dao;
+
     /**
-     *Takes agency_id as input and returns an object of Agency with its review
+     * Takes agency_id as input and returns an object of Agency with its review
      */
     @GetMapping("/{agency_id}")
     public ResponseEntity<AgencyModel> readAgency(@PathVariable long agency_id) {
@@ -28,8 +29,9 @@ public class AgencyController {
             return ResponseEntity.notFound().build();
         }
     }
+
     /**
-     *Takes Agency object as input and returns an object of Agency
+     * Takes Agency object as input and returns an object of Agency
      */
     @PostMapping("")
     public ResponseEntity<Agency> createAgency(@RequestBody Agency model) {
@@ -38,12 +40,11 @@ public class AgencyController {
              *Does not allow null value as input
              */
             if (model.getAgency_name() == null
-                    ||model.getAgency_address() == null
-                    ||model.getAgency_email() == null
-                    ||model.getAgency_primary_num() == null){
+                    || model.getAgency_address() == null
+                    || model.getAgency_email() == null
+                    || model.getAgency_primary_num() == null) {
                 return ResponseEntity.badRequest().build();
-            }
-            else {
+            } else {
                 /**
                  *checking the column value sizes
                  */
@@ -64,8 +65,9 @@ public class AgencyController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     /**
-     *Takes an Agency with an agency_id as input and returns an object of Agency
+     * Takes an Agency with an agency_id as input and returns an object of Agency
      */
     @PutMapping("")
     public ResponseEntity<Agency> updateAgency(@RequestBody Agency model) {
@@ -73,14 +75,13 @@ public class AgencyController {
             /**
              *Does not allow null value as input
              */
-            if (model.getAgency_id()<=0
-                    ||model.getAgency_name() == null
-                    ||model.getAgency_address() == null
-                    ||model.getAgency_email() == null
-                    ||model.getAgency_primary_num() == null){
+            if (model.getAgency_id() <= 0
+                    || model.getAgency_name() == null
+                    || model.getAgency_address() == null
+                    || model.getAgency_email() == null
+                    || model.getAgency_primary_num() == null) {
                 return ResponseEntity.badRequest().build();
-            }
-            else {
+            } else {
                 /**
                  *Checking column value sizes
                  */

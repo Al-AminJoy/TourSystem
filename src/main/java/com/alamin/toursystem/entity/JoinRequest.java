@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class JoinRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long join_req_id;
-    @Column(nullable = false ,length = 32)
+    @Column(nullable = false, length = 32)
     private LocalDate join_req_time;
     @Column(nullable = false)
     private long user_id;

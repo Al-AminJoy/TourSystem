@@ -8,11 +8,16 @@ import java.util.List;
 
 public interface AgencyReviewDao {
 
-     List<AgencyReview> getAll();
-     AgencyReview findById(long review_id)throws ResourceNotFoundException;
-     List<AgencyReviewModel> findByAgencyId(long agency_id);
-     AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException, ResourceNotFoundException;
-     AgencyReview update(AgencyReview model)throws ResourceNotFoundException;
-     AgencyReview deleteById(long review_id) throws ResourceNotFoundException;
+    List<AgencyReview> getAll();
+
+    AgencyReview findById(long review_id) throws ResourceNotFoundException;
+
+    List<AgencyReviewModel> findByAgencyId(long agency_id);
+
+    AgencyReview create(AgencyReview model) throws ResourceAlreadyExistException, ResourceNotFoundException;
+
+    AgencyReview update(AgencyReview model) throws ResourceNotFoundException;
+
+    AgencyReview deleteById(long review_id) throws ResourceNotFoundException;
 
 }

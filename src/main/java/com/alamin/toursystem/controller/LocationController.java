@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -16,15 +17,17 @@ import java.util.List;
 public class LocationController {
     @Autowired
     private LocationDao dao;
+
     /**
-     *Provides a List of LocationModel Which Includes Location and LocationReview
+     * Provides a List of LocationModel Which Includes Location and LocationReview
      */
     @GetMapping("")
-    public ResponseEntity<List<LocationModel>> readLocations(){
+    public ResponseEntity<List<LocationModel>> readLocations() {
         return ResponseEntity.ok(dao.getAllLocation());
     }
+
     /**
-     *Takes location_id  as input and returns an object of LocationModel
+     * Takes location_id  as input and returns an object of LocationModel
      */
     @GetMapping("/{location_id}")
     public ResponseEntity<LocationModel> readLocation(@PathVariable long location_id) {
@@ -34,8 +37,9 @@ public class LocationController {
             return ResponseEntity.notFound().build();
         }
     }
+
     /**
-     *Takes Location object as input and returns an object of Location
+     * Takes Location object as input and returns an object of Location
      */
     @PostMapping("")
     public ResponseEntity<Location> createLocation(@RequestBody Location model) {
@@ -43,17 +47,15 @@ public class LocationController {
             /**
              *Does not allow null value as input
              */
-            if (model.getLocation_name()==null){
+            if (model.getLocation_name() == null) {
                 return ResponseEntity.badRequest().build();
-            }
-            else {
+            } else {
                 /**
                  *checking the column value sizes
                  */
-                if (model.getLocation_name().length()>32){
+                if (model.getLocation_name().length() > 32) {
                     return ResponseEntity.badRequest().build();
-                }
-                else {
+                } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
                 }
             }

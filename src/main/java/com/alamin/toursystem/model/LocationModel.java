@@ -1,6 +1,5 @@
 package com.alamin.toursystem.model;
 
-import com.alamin.toursystem.entity.LocationReview;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

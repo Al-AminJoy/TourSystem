@@ -15,7 +15,7 @@ public class CancelRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long cancel_req_id;
-    @Column(nullable = false ,length = 32)
+    @Column(nullable = false, length = 32)
     private LocalDate cancel_req_time;
     @Column(nullable = false)
     private long user_id;
