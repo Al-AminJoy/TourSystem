@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -28,6 +26,13 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/data")
+    public User user() {
+       return new User();
+    }
+
+
 
     /**
      * Takes User object as input and returns an object of User
