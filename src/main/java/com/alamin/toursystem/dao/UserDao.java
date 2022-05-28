@@ -23,7 +23,6 @@ public interface UserDao {
     User deleteById(long user_id) throws ResourceNotFoundException;
 
     public Optional<User> getUserByUserName(String userName);
-
-
+    
     Optional<User> getUserByEmail(String email);
 }

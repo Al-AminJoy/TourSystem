@@ -5,6 +5,7 @@ import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.entity.User;
+import com.alamin.toursystem.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
@@ -25,12 +28,11 @@ public class UserController {
     private final ConfigJWT jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final UserRepository repository;
 
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody User user) throws Exception {
-
-        System.out.println("username : " + user.getUserName() + " password : " + user.getPassword());
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
         } catch (BadCredentialsException e) {
@@ -38,7 +40,25 @@ public class UserController {
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
         final String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new AuthenticatedUser(user.getUserName(), token));
+    }
+
+    private static class AuthenticatedUser {
+        private final String username;
+        private final String accessToken;
+
+        public AuthenticatedUser(String username, String accessToken) {
+            this.username = username;
+            this.accessToken = accessToken;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getToken() {
+            return accessToken;
+        }
     }
 
     /**
@@ -53,9 +73,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("/data")
-    public User user() {
-        return new User();
+    @GetMapping("/all-users")
+    public ResponseEntity<List<User>> user() {
+        List<User> allUsers = (List<User>) repository.findAll();
+        return ResponseEntity.ok(allUsers);
     }
 
 
