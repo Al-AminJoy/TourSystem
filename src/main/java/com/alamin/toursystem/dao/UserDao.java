@@ -5,6 +5,7 @@ import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
     List<User> getAll();
@@ -21,5 +22,8 @@ public interface UserDao {
 
     User deleteById(long user_id) throws ResourceNotFoundException;
 
+    public Optional<User> getUserByUserName(String userName);
 
+
+    Optional<User> getUserByEmail(String email);
 }

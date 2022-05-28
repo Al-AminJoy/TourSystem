@@ -1,10 +1,15 @@
 package com.alamin.toursystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -32,5 +37,24 @@ public class User {
     private String num1;
     @Column(length = 11)
     private String num2;
+    private String email;
+    private String password;
+    private String userName;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Role> roles = new HashSet<>();
+
+    public User(User users) {
+        this.user_id = users.getUser_id();
+        this.userName = users.getUserName();
+//        this.email = users.getEmail();
+        this.password = users.getPassword();
+//        this.isAccountNonExpired = users.getIsAccountNonExpired();
+//        this.isAccountNonLocked = users.getIsAccountNonLocked();
+//        this.isCredentialsNonExpired = users.getIsCredentialsNonExpired();
+//        this.isEnabled = users.getIsEnabled();
+//        this.isVerified = users.getIsVerified();
+        this.roles = users.getRoles();
+    }
 }

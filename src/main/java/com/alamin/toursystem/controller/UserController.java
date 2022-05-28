@@ -1,19 +1,45 @@
 package com.alamin.toursystem.controller;
 
+import com.alamin.toursystem.configuration.ConfigJWT;
 import com.alamin.toursystem.dao.UserDao;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.entity.User;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    private UserDao dao;
+
+    private final UserDao dao;
+    private final ConfigJWT jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+
+
+    @PostMapping(value = "/authenticate")
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody User user) throws Exception {
+
+        System.out.println("username : " + user.getUserName() + " password : " + user.getPassword());
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
+        } catch (BadCredentialsException e) {
+            throw new Exception("Username or password not matched", e);
+        }
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
+        final String token = jwtUtil.generateToken(userDetails);
+        return ResponseEntity.ok(token);
+    }
 
     /**
      * Takes user_id  as input and returns an object of User
@@ -29,9 +55,8 @@ public class UserController {
 
     @GetMapping("/data")
     public User user() {
-       return new User();
+        return new User();
     }
-
 
 
     /**
@@ -44,23 +69,23 @@ public class UserController {
              *Does not allow null value as input
              */
             if (model.getFirst_name() == null
-                    || model.getLast_name() == null
-                    || model.getUser_email() == null
-                    || model.getUser_address() == null
-                    || model.getUser_gender() == null
-                    || model.getUser_dob() == null
-                    || model.getPrimary_num() == null) {
+                || model.getLast_name() == null
+                || model.getUser_email() == null
+                || model.getUser_address() == null
+                || model.getUser_gender() == null
+                || model.getUser_dob() == null
+                || model.getPrimary_num() == null) {
                 return ResponseEntity.badRequest().build();
             } else {
                 /**
                  *checking the column value sizes
                  */
                 if (model.getFirst_name().length() > 32
-                        || model.getLast_name().length() > 32
-                        || model.getUser_email().length() > 32
-                        || model.getUser_address().length() > 64
-                        || model.getUser_gender().length() > 6
-                        || model.getPrimary_num().length() > 11) {
+                    || model.getLast_name().length() > 32
+                    || model.getUser_email().length() > 32
+                    || model.getUser_address().length() > 64
+                    || model.getUser_gender().length() > 6
+                    || model.getPrimary_num().length() > 11) {
                     return ResponseEntity.badRequest().build();
                 } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.create(model));
@@ -82,24 +107,24 @@ public class UserController {
              *Does not allow null value as input
              */
             if (model.getUser_id() <= 0
-                    || model.getFirst_name() == null
-                    || model.getLast_name() == null
-                    || model.getUser_email() == null
-                    || model.getUser_address() == null
-                    || model.getUser_gender() == null
-                    || model.getUser_dob() == null
-                    || model.getPrimary_num() == null) {
+                || model.getFirst_name() == null
+                || model.getLast_name() == null
+                || model.getUser_email() == null
+                || model.getUser_address() == null
+                || model.getUser_gender() == null
+                || model.getUser_dob() == null
+                || model.getPrimary_num() == null) {
                 return ResponseEntity.badRequest().build();
             } else {
                 /**
                  *checking the column value sizes
                  */
                 if (model.getFirst_name().length() > 32
-                        || model.getLast_name().length() > 32
-                        || model.getUser_email().length() > 32
-                        || model.getUser_address().length() > 64
-                        || model.getUser_gender().length() > 6
-                        || model.getPrimary_num().length() > 11) {
+                    || model.getLast_name().length() > 32
+                    || model.getUser_email().length() > 32
+                    || model.getUser_address().length() > 64
+                    || model.getUser_gender().length() > 6
+                    || model.getPrimary_num().length() > 11) {
                     return ResponseEntity.badRequest().build();
                 } else {
                     return ResponseEntity.status(HttpStatus.CREATED).body(dao.update(model));

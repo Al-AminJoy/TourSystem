@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDao {
@@ -75,19 +76,8 @@ public class UserService implements UserDao {
      */
     @Override
     public User update(User model) throws ResourceNotFoundException {
-        User user = new User(
-                model.getUser_id(),
-                model.getFirst_name(),
-                model.getLast_name(),
-                model.getUser_email(),
-                model.getUser_address(),
-                model.getUser_gender(),
-                model.getUser_dob(),
-                model.getPrimary_num(),
-                model.getNum1(),
-                model.getNum2());
         if (repository.existsById(model.getUser_id())) {
-            User updatedUser = repository.save(user);
+            User updatedUser = repository.save(new User());
             return updatedUser;
         } else {
             throw new ResourceNotFoundException();
@@ -106,6 +96,16 @@ public class UserService implements UserDao {
         } else {
             throw new ResourceNotFoundException();
         }
+    }
+
+    @Override
+    public Optional<User> getUserByUserName(String userName) {
+        return repository.findByUserNameIgnoreCase(userName);
+    }
+
+    @Override
+    public Optional<User> getUserByEmail(String email) {
+        return repository.findByEmailIgnoreCase(email);
     }
 
 
