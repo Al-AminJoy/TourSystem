@@ -2,11 +2,12 @@ package com.alamin.toursystem.controller;
 
 import com.alamin.toursystem.configuration.ConfigJWT;
 import com.alamin.toursystem.dao.UserDao;
+import com.alamin.toursystem.entity.Role;
 import com.alamin.toursystem.exception.ResourceAlreadyExistException;
 import com.alamin.toursystem.exception.ResourceNotFoundException;
 import com.alamin.toursystem.entity.User;
+import com.alamin.toursystem.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -25,20 +31,48 @@ public class UserController {
     private final ConfigJWT jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final UserRepository repository;
 
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody User user) throws Exception {
-
-        System.out.println("username : " + user.getUserName() + " password : " + user.getPassword());
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new Exception("Username or password not matched", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username or password not matched");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
         final String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(token);
+        Optional<User> aUser = repository.findByUserNameIgnoreCase(user.getUserName());
+        if (!aUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
+        }
+        return ResponseEntity.ok(new AuthenticatedUser(user.getUserName(), token, aUser.get().getRoles()));
+
+    }
+
+    private static class AuthenticatedUser {
+        private final String username;
+        private final String accessToken;
+        private final Set<Role> roles;
+
+        public AuthenticatedUser(String username, String accessToken, Set<Role> roles) {
+            this.username = username;
+            this.accessToken = accessToken;
+            this.roles = roles;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public Set<Role> getRoles() {
+            return roles;
+        }
     }
 
     /**
@@ -53,9 +87,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("/data")
-    public User user() {
-        return new User();
+    @GetMapping("/all-users")
+    public ResponseEntity<List<User>> user() {
+        List<User> allUsers = (List<User>) repository.findAll();
+        return ResponseEntity.ok(allUsers);
     }
 
 

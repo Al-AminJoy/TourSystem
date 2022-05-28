@@ -38,11 +38,12 @@ public class User {
     @Column(length = 11)
     private String num2;
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @Column(unique = true)
     private String userName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     public User(User users) {
