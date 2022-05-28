@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Service
 public class ConfigJWT {
 
-    private String SECRET_KEY = "secret";
+    private final String SECRET_KEY = "secret";
 
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
